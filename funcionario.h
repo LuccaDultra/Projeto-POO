@@ -48,6 +48,7 @@ public:
     double getSalarioBase() const;
     std::string getRg() const;
     std::string getCargo() const;
+    TipoVinculo getVinculo() const;
 };
 
 #endif
