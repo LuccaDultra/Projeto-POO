@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <ctime> // Para data atual
 
 //struct do endereco
 struct Endereco {
@@ -23,6 +24,14 @@ struct Data {
         if (ano < 1900 || ano > 2100) return false;
         return true;
     }
+
+    static Data hoje() {
+        std::time_t t = std::time(nullptr);
+        std::tm* agora = std::localtime(&t);
+        
+        return { agora->tm_mday, agora->tm_mon + 1, agora->tm_year + 1900 };
+    }
+
 
     //metodo auxiliar para imprimir a data no formato dd/mm/aa
     std::string toString() const {

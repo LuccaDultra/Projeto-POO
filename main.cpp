@@ -4,6 +4,8 @@
 #include "funcionario.h"
 #include "financeiro.h"
 #include "rh.h" 
+#include "interface.h"
+
 
 using namespace std;
 
@@ -40,6 +42,11 @@ int main() {
             1500.00, 50000.00, 0.05 // Fixo + (50k vendas * 5%)
         ));
 
+
+
+        // Comentando cout's para usar a interface
+        
+        /*
         // Testando o Polimorfismo
         cout << ">>> Testando Polimorfismo e Hierarquia <<<\n";
         RelatorioFinanceiro::folhaPagamento(funcionarios);
@@ -55,6 +62,13 @@ int main() {
         
         // A matrícula do primeiro (Gustavo) será gerada automaticamente como 2026001
         ModuloRH::buscarPorMatricula(funcionarios, 2026001); 
+
+        */
+
+
+
+        // Inicia a interface pelo método iniciar
+        InterfaceCLI::iniciar(funcionarios);
 
     } catch (const exception& e) {
         cerr << "Erro: " << e.what() << endl;
