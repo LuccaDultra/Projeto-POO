@@ -4,6 +4,7 @@
 #include "funcionario.h"
 #include <vector>
 #include <iostream>
+#include <memory> 
 
 // FUNCIONARIO CLT
 
@@ -37,7 +38,9 @@ public:
                    double salarioBase,
                    bool noturno)
         : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::CLT),
-          turnoNoturno(noturno) {}
+          turnoNoturno(noturno) {
+              this->cargo = "Funcionario CLT"; // Ajuste para os filtros do RH
+          }
 
     // Calcula o salário líquido final
     // Aplica adicional noturno e descontos obrigatórios
@@ -78,18 +81,27 @@ private:
 
     // Valor pago por hora
     double valorHora;
+    
+    // Data de termino do estagio (Regra de negocio adicionada)
+    Data fimContrato; 
 
 public:
 
     // Construtor do estagiário
     // Salário base é 0 pois é calculado por hora
     Estagiario(std::string nome, std::string cpf, std::string rg,
-               Endereco end, Data admissao,
+               Endereco end, Data admissao, Data fim, // Recebe a data de fim
                int horasTrabalhadas,
                double valor)
         : Funcionario(nome, cpf, rg, end, admissao, 0, TipoVinculo::ESTAGIARIO),
+          fimContrato(fim),
           horas(horasTrabalhadas),
-          valorHora(valor) {}
+          valorHora(valor) {
+              this->cargo = "Estagiario";
+          }
+
+    // Getter para o RH verificar o vencimento
+    Data getFimContrato() const { return fimContrato; }
 
     // Calcula salário multiplicando horas x valor hora
     double calcularSalario() const override {
@@ -105,7 +117,7 @@ public:
     }
 };
 
-// VENDEDOR (COMISSAO)
+// VENDEDOR (COMISSAO / CONTRATO PJ)
 
 class Vendedor : public Funcionario {
 private:
@@ -115,19 +127,28 @@ private:
 
     // Percentual de comissão sobre vendas
     double percentualComissao;
+    
+    // Data de termino do contrato (Regra de negocio adicionada)
+    Data fimContrato; 
 
 public:
 
     // Construtor do vendedor
     // Pode ter salário fixo + comissão
     Vendedor(std::string nome, std::string cpf, std::string rg,
-             Endereco end, Data admissao,
+             Endereco end, Data admissao, Data fim, // Recebe a data de fim
              double salarioBase,
              double vendas,
              double percentual)
         : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::PJ),
+          fimContrato(fim),
           totalVendas(vendas),
-          percentualComissao(percentual) {}
+          percentualComissao(percentual) {
+              this->cargo = "Vendedor PJ";
+          }
+          
+    // Getter para o RH verificar o vencimento
+    Data getFimContrato() const { return fimContrato; }
 
     // Calcula salário somando salário fixo + comissão
     double calcularSalario() const override {
@@ -150,10 +171,9 @@ public:
 
     // Calcula custo total da empresa
     // Soma o salário líquido de todos os funcionários
-    static double custoTotalEmpresa(const std::vector<Funcionario*>& lista) {
+    static double custoTotalEmpresa(const std::vector<std::unique_ptr<Funcionario>>& lista) {
         double total = 0;
 
-        // Polimorfismo em ação:
         // Cada objeto chama sua própria implementação de calcularSalario()
         for (const auto& f : lista)
             total += f->calcularSalario();
@@ -162,7 +182,7 @@ public:
     }
 
     // Calcula custo total por tipo de vínculo (CLT, ESTAGIARIO, PJ)
-    static double custoPorVinculo(const std::vector<Funcionario*>& lista,
+    static double custoPorVinculo(const std::vector<std::unique_ptr<Funcionario>>& lista,
                                   TipoVinculo tipo) {
 
         double total = 0;
@@ -176,7 +196,7 @@ public:
     }
 
     // Gera folha de pagamento completa
-    static void folhaPagamento(const std::vector<Funcionario*>& lista) {
+    static void folhaPagamento(const std::vector<std::unique_ptr<Funcionario>>& lista) {
 
         std::cout << "\n========== FOLHA DE PAGAMENTO ==========\n";
 
