@@ -44,3 +44,4 @@ Data Funcionario::getDataAdmissao() const { return dataAdmissao; }
 double Funcionario::getSalarioBase() const { return salarioBase; }
 string Funcionario::getRg() const { return rg; }
 string Funcionario::getCargo() const { return cargo; }
+TipoVinculo Funcionario::getVinculo() const { return vinculo; }
