@@ -20,6 +20,7 @@ private:
     
     // Função auxiliar para pausas e limpeza de tela
     static void pausarTela();
+    static void limparTela();
 };
 
 #endif
