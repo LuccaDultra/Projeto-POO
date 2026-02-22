@@ -17,6 +17,8 @@ private:
     static int exibirMenuPrincipal();
     static void menuRH(const std::vector<std::unique_ptr<Funcionario>>& funcionarios, Data dataAtual);
     static void menuFinanceiro(const std::vector<std::unique_ptr<Funcionario>>& funcionarios);
+    static void exibirGradeHorarios(const std::vector<std::unique_ptr<Funcionario>>& funcionarios);
+    static void exibirOrganograma(const std::vector<std::unique_ptr<Funcionario>>& funcionarios);
     
     // Função auxiliar para pausas e limpeza de tela
     static void pausarTela();

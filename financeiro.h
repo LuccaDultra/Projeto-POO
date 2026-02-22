@@ -36,8 +36,8 @@ public:
     FuncionarioCLT(std::string nome, std::string cpf, std::string rg,
                    Endereco end, Data admissao,
                    double salarioBase,
-                   bool noturno)
-        : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::CLT),
+                   bool noturno, std::string turno, std::string departamento)
+        : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::CLT, turno, departamento),
           turnoNoturno(noturno) {
               this->cargo = "Funcionario CLT"; // Ajuste para os filtros do RH
           }
@@ -92,8 +92,8 @@ public:
     Estagiario(std::string nome, std::string cpf, std::string rg,
                Endereco end, Data admissao, Data fim, // Recebe a data de fim
                int horasTrabalhadas,
-               double valor)
-        : Funcionario(nome, cpf, rg, end, admissao, 0, TipoVinculo::ESTAGIARIO),
+               double valor, std::string turno, std::string departamento)
+        : Funcionario(nome, cpf, rg, end, admissao, 0, TipoVinculo::ESTAGIARIO, turno, departamento),
           fimContrato(fim),
           horas(horasTrabalhadas),
           valorHora(valor) {
@@ -139,8 +139,8 @@ public:
              Endereco end, Data admissao, Data fim, // Recebe a data de fim
              double salarioBase,
              double vendas,
-             double percentual)
-        : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::PJ),
+             double percentual, std::string turno, std::string departamento)
+        : Funcionario(nome, cpf, rg, end, admissao, salarioBase, TipoVinculo::PJ, turno, departamento),
           fimContrato(fim),
           totalVendas(vendas),
           percentualComissao(percentual) {

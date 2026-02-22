@@ -16,6 +16,10 @@ protected:
     std::string rg;
     Endereco endereco;
     
+    // info p grade e organograma
+    std::string departamento; 
+    std::string turno;        
+
     //controle interno, numero da contratacao
     static int contadorMatriculas; //conta o n de matriculas
     int matricula;                 //salva o n de matricula
@@ -30,8 +34,8 @@ protected:
     bool validarCPF(const std::string& cpf);
 
 public:
-    //construtor do funcionariop
-    Funcionario(std::string nome, std::string cpf, std::string rg, Endereco end, Data admissao, double salario, TipoVinculo v);
+    //construtor do funcionario
+    Funcionario(std::string nome, std::string cpf, std::string rg, Endereco end, Data admissao, double salario, TipoVinculo v,std::string turno = "Manha", std::string departamento = "Geral");
     
     //destrutor virtual
     virtual ~Funcionario() = default;
@@ -49,6 +53,8 @@ public:
     std::string getRg() const;
     std::string getCargo() const;
     TipoVinculo getVinculo() const;
+    std::string getDepartamento() const; 
+    std::string getTurno() const;
 };
 
 #endif
