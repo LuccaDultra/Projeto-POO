@@ -7,8 +7,8 @@ using namespace std;
 int Funcionario::contadorMatriculas = 2026000; 
 
 //implementando construtor funcionario
-Funcionario::Funcionario(string n, string c, string r, Endereco end, Data adm, double sal, TipoVinculo v)
-    : nome(n), cpf(c), rg(r), endereco(end), dataAdmissao(adm), salarioBase(sal), vinculo(v) {
+Funcionario::Funcionario(string n, string c, string r, Endereco end, Data adm, double sal, TipoVinculo v, string t,string d)
+    : nome(n), cpf(c), rg(r), endereco(end), dataAdmissao(adm), salarioBase(sal), vinculo(v), turno(t), departamento(d) {
     
     //validacao de CPF
     if (!validarCPF(c)) {
@@ -45,3 +45,5 @@ double Funcionario::getSalarioBase() const { return salarioBase; }
 string Funcionario::getRg() const { return rg; }
 string Funcionario::getCargo() const { return cargo; }
 TipoVinculo Funcionario::getVinculo() const { return vinculo; }
+string Funcionario::getDepartamento() const { return departamento; }
+string Funcionario::getTurno() const { return turno; }
