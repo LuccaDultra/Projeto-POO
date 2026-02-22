@@ -57,7 +57,9 @@ void InterfaceCLI::iniciar(vector<unique_ptr<Funcionario>>& funcionarios) {
                 break;
             case 3:
                 limparTela();
-                cout << "\n--- LISTA GERAL DE FUNCIONARIOS ---\n";
+                    cout << "\n=========================================\n";
+                    cout << "         LISTA GERAL DE FUNCIONARIOS       \n";
+                    cout << "=========================================\n\n";
                 // Cumprindo o requisito do método render() 
                 for (const auto& f : funcionarios) {
                     f->render();
@@ -87,7 +89,9 @@ void InterfaceCLI::iniciar(vector<unique_ptr<Funcionario>>& funcionarios) {
 
 void InterfaceCLI::menuRH(const vector<unique_ptr<Funcionario>>& funcionarios, Data dataAtual) {
     limparTela();
-    cout << "\n>>> ACESSANDO MODULO DE RH <<<\n";
+    cout << "\n======================================================\n";
+    cout << "                MODULO DE RH                           \n";
+    cout << "======================================================\n";
     // Chama os métodos que já existem do rh.h
     ModuloRH::listarFeriasVencidas(funcionarios, dataAtual);
     ModuloRH::listarContratosVencendo(funcionarios, dataAtual);
@@ -96,13 +100,16 @@ void InterfaceCLI::menuRH(const vector<unique_ptr<Funcionario>>& funcionarios, D
 
 void InterfaceCLI::menuFinanceiro(const vector<unique_ptr<Funcionario>>& funcionarios) {
     limparTela();
-    cout << "\n>>> ACESSANDO MODULO FINANCEIRO <<<\n";
+    cout << "\n======================================================\n";
+    cout << "                MODULO FINANCEIRO                      \n";
+    cout << "======================================================\n";
     // Chama o relatório do financeiro
     RelatorioFinanceiro::folhaPagamento(funcionarios);
     pausarTela();
 }
 
 void InterfaceCLI::exibirGradeHorarios(const vector<unique_ptr<Funcionario>>& funcionarios) {
+    limparTela();
     cout << "\n======================================================\n";
     cout << "                GRADE DE HORARIOS VISUAL                \n";
     cout << "======================================================\n";
@@ -126,6 +133,7 @@ void InterfaceCLI::exibirGradeHorarios(const vector<unique_ptr<Funcionario>>& fu
 }
 
 void InterfaceCLI::exibirOrganograma(const vector<unique_ptr<Funcionario>>& funcionarios) {
+    limparTela();
     cout << "\n=========================================\n";
     cout << "         ORGANOGRAMA DE EQUIPE           \n";
     cout << "=========================================\n";
