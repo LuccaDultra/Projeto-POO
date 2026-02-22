@@ -8,9 +8,9 @@
 #include <iostream>
 #include <string>
 
+//classe do rh, calcula ferias e controla a logica do menu rh
 class ModuloRH {
 private:
-    //funcao auxiliar privada para calcular a diferença de dias entre duas datas, utiliza mes comercial 30 dias e ano comercial 660 dias
     static int calcularDiferencaDias(Data inicio, Data fim) {
         int diasInicio = (inicio.ano * 360) + (inicio.mes * 30) + inicio.dia;
         int diasFim = (fim.ano * 360) + (fim.mes * 30) + fim.dia;
@@ -18,124 +18,87 @@ private:
     }
 
 public:
-    // =========================================================
-    // 1. GESTAO DE FERIAS
-    // =========================================================
     
     //Lista funcionArios com mais de 1 ano e 11 meses sem ferias
     static void listarFeriasVencidas(const std::vector<std::unique_ptr<Funcionario>>& lista, Data dataAtual) {
-        std::cout << "\n========== ALERTA DE FERIAS VENCIDAS ==========\n";
+        std::cout << COR_TITULO << "\n========== FERIAS VENCIDAS ==========\n" << COR_RESET;
         bool encontrou = false;
         
-        //compara data atual - data admissao
         for (const auto& f : lista) {
+            if (!f->isAtivo()) continue; 
+            
             int diasTrabalhados = calcularDiferencaDias(f->getDataAdmissao(), dataAtual);
             
-            if (diasTrabalhados >= 690) { 
-                std::cout << "[ALERTA] Funcionario: " << f->getNome() 
-                          << " | Matricula: " << f->getMatricula() 
-                          << " | Admissao: " << f->getDataAdmissao().toString() 
-                          << " | Dias na empresa: " << diasTrabalhados << "\n";
+            if (diasTrabalhados > 690) { 
+                int diasVencidos = diasTrabalhados - 690;
+                // Padrao Nome, Matricula, Admissao e Dias Vencidos apenas
+                std::cout << COR_AVISO << "[VENCIDA] " << COR_RESET << f->getPrimeiroNome() 
+                          << " | Mat: " << f->getMatricula() 
+                          << " | Adm: " << f->getDataAdmissao().toString() 
+                          << " | Dias vencidos: " << COR_AVISO << diasVencidos << COR_RESET << "\n";
                 encontrou = true;
             }
         }
         if (!encontrou) std::cout << "Nenhum funcionario com ferias vencidas.\n";
     }
-
-    // =========================================================
-    // 2. FILTROS
-    // =========================================================
-
-    //filtro de matricula
-    static void buscarPorMatricula(const std::vector<std::unique_ptr<Funcionario>>& lista, int matBusca) {
-        std::cout << "\n--- Busca por Matricula: " << matBusca << " ---\n";
-        for (const auto& f : lista) {
-            if (f->getMatricula() == matBusca) {
-                f->render();
-                return; //se encontrou, sai da funcao
-            }
-        }
-        std::cout << "Funcionario nao encontrado.\n";
-    }
-
-    //filtro de nome
-    static void buscarPorNome(const std::vector<std::unique_ptr<Funcionario>>& lista, const std::string& nomeBusca) {
-        std::cout << "\n--- Busca por Nome: " << nomeBusca << " ---\n";
+    
+    //Lista funcionarios com ferias a vencer
+    static void listarFeriasParaVencer(const std::vector<std::unique_ptr<Funcionario>>& lista, Data dataAtual) {
+        std::cout << COR_TITULO << "\n========== FERIAS PARA VENCER ==========\n" << COR_RESET;
         bool encontrou = false;
+        
         for (const auto& f : lista) {
-            if (f->getNome() == nomeBusca) {
-                f->render();
+            if (!f->isAtivo()) continue; 
+            
+            int diasTrabalhados = calcularDiferencaDias(f->getDataAdmissao(), dataAtual);
+            
+            if (diasTrabalhados >= 660 && diasTrabalhados <= 690) { 
+                int diasFaltando = 690 - diasTrabalhados;
+                std::cout << COR_TITULO << "[ALERTA] " << COR_RESET << f->getPrimeiroNome() 
+                          << " | Mat: " << f->getMatricula() 
+                          << " | Adm: " << f->getDataAdmissao().toString() 
+                          << " | Faltam p/ vencer: " << COR_TITULO << diasFaltando << " dias" << COR_RESET << "\n";
                 encontrou = true;
             }
         }
-        if (!encontrou) std::cout << "Funcionario nao encontrado.\n";
+        if (!encontrou) std::cout << "Nenhum funcionario com ferias proximas de vencer.\n";
     }
-
-    //filtrid de cpf
-    static void buscarPorCPF(const std::vector<std::unique_ptr<Funcionario>>& lista, const std::string& cpfBusca) {
-        std::cout << "\n--- Busca por CPF: " << cpfBusca << " ---\n";
-        for (const auto& f : lista) {
-            if (f->getCpf() == cpfBusca) {
-                f->render();
-                return;
-            }
-        }
-        std::cout << "Funcionario nao encontrado.\n";
-    }
-
-    //filtro de cargo
-    static void buscarPorCargo(const std::vector<std::unique_ptr<Funcionario>>& lista, const std::string& cargoBusca) {
-        std::cout << "\n--- Funcionarios no cargo: " << cargoBusca << " ---\n";
-        bool encontrou = false;
-        for (const auto& f : lista) {
-            if (f->getCargo() == cargoBusca) {
-                std::cout << "- " << f->getNome() << " (Mat: " << f->getMatricula() << ")\n";
-                encontrou = true;
-            }
-        }
-        if (!encontrou) std::cout << "Nenhum funcionario encontrado neste cargo.\n";
-    }
-
-    // =========================================================
-    // 3. CONTRATOS
-    // =========================================================
 
     //listar estagiarios e contratos com contrato vencendo em 30 dias
     static void listarContratosVencendo(const std::vector<std::unique_ptr<Funcionario>>& lista, Data dataAtual) {
-        std::cout << "\n========== CONTRATOS VENCENDO (30 DIAS) ==========\n";
+        std::cout << COR_TITULO << "\n========== CONTRATOS VENCENDO ==========\n" << COR_RESET;
         bool encontrou = false;
 
         for (const auto& f : lista) {
             
-            //tenta converter o ponteiro base para as classes derivadas que possuem data de fim
+            if (!f->isAtivo()) continue; 
+
             Estagiario* est = dynamic_cast<Estagiario*>(f.get());
             Vendedor* pj = dynamic_cast<Vendedor*>(f.get());
 
             Data fimContrato = {0, 0, 0}; 
-            std::string tipoFunc = "";
 
-            if (est != nullptr) { //se funcionou ele e estagiario
+            if (est != nullptr) { 
                 fimContrato = est->getFimContrato();
-                tipoFunc = "Estagiario";
-            } else if (pj != nullptr) { //se nao, e pj 
+            } else if (pj != nullptr) {  
                 fimContrato = pj->getFimContrato();
-                tipoFunc = "Contrato PJ";
             }
 
-            //apenas em quem e estagiario ou pj
             if (est != nullptr || pj != nullptr) {
-                
-                //data fim - data atual
                 int diasParaVencer = calcularDiferencaDias(dataAtual, fimContrato);
 
                 if (diasParaVencer > 0 && diasParaVencer <= 30) {
-                    std::cout << "[ALERTA] " << tipoFunc << ": " << f->getNome() 
-                              << " | Vence em: " << diasParaVencer << " dias (" 
-                              << fimContrato.toString() << ").\n";
+                    // Padrao Nome, Matricula, Admissao e Tempo Restante apenas
+                    std::cout << COR_TITULO << "[ALERTA] " << COR_RESET << f->getPrimeiroNome() 
+                              << " | Mat: " << f->getMatricula()
+                              << " | Adm: " << f->getDataAdmissao().toString()
+                              << " | Tempo restante: " << COR_TITULO << diasParaVencer << " dias" << COR_RESET << "\n";
                     encontrou = true;
                 } else if (diasParaVencer <= 0) {
-                    std::cout << "[EXPIRADO] " << tipoFunc << ": " << f->getNome() 
-                              << " | Contrato ja venceu em " << fimContrato.toString() << "!\n";
+                    std::cout << COR_AVISO << "[EXPIRADO] " << COR_RESET << f->getPrimeiroNome() 
+                              << " | Mat: " << f->getMatricula()
+                              << " | Adm: " << f->getDataAdmissao().toString()
+                              << " | " << COR_AVISO << "Contrato ja venceu!" << COR_RESET << "\n";
                     encontrou = true;
                 }
             }
