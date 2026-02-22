@@ -5,6 +5,15 @@
 #include <iostream>
 #include <ctime> // Para data atual
 
+//corres p personalizar o termianl
+#define COR_TITULO "\033[0m" //amarelo
+#define COR_ERRO "\033[31m"   //vermelho
+#define COR_AVISO "\033[31m"  //vermelho
+#define COR_SAIDA "\033[31m"  //vermelho(Deficit/Pagamento)
+#define COR_SIM "\033[32m"    //verde
+#define COR_NAO "\033[31m"    //vermelho
+#define COR_RESET "\033[0m"   //restaura a cor padrao
+
 //struct do endereco
 struct Endereco {
     std::string rua;
